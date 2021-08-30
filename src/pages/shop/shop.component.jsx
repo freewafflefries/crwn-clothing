@@ -18,7 +18,7 @@ import CollectionPreview from '../../components/collection-preview/collection-pr
         const {collections} = this.state;
 
        return  (
-       <div classsName='shop-page'>
+       <div className='shop-page'>
            {
                collections.map(({id, ...otherCollectionProps}) => (
                 <CollectionPreview key={id} title={otherCollectionProps.title} items={otherCollectionProps.items}/>
