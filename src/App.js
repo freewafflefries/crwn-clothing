@@ -7,31 +7,28 @@ import ShopPage from './pages/shop/shop.component.jsx';
 import Header from './components/header/header.component.jsx';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
 
-import React from 'react';
-import {connect} from 'react-redux'
+import React, {useEffect} from 'react';
+import { useSelector, useDispatch} from 'react-redux'
 
 import { selectCurrentUser } from './redux/user/user.selector'
-import { createStructuredSelector } from 'reselect'
+//import { createStructuredSelector } from 'reselect'
 import { checkUserSession } from './redux/user/user.actions'
 
 
 
 
-class App extends React.Component {
+const App = () => {
+
+  const currentUser = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
 
 
-  unsubscribeFromAuth = null
+ useEffect(() => {
+   dispatch(checkUserSession())
+ }, [dispatch] )
+  
 
-  componentDidMount() {
-    const {checkUserSession} = this.props
-    checkUserSession()
-  }
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-
-  render(){
   return (
     <div >
       <Header />
@@ -39,19 +36,23 @@ class App extends React.Component {
         <Route exact path='/' component={HomePage}/>
         <Route  path='/shop' component={ShopPage}/>
         <Route exact path='/checkout' component={CheckoutPage} />
-        <Route exact path='/signin' render={() => this.props.currentUser ?(<Redirect to='/'/>) : (<SignInAndSignUpPage/>)} />
+        <Route exact path='/signin' render={() => currentUser ?(<Redirect to='/'/>) : (<SignInAndSignUpPage/>)} />
       </Switch>
     </div>
   )
-}}
+}
 
-const mapStateToProps =  createStructuredSelector({
-  currentUser: selectCurrentUser
-})
+// const mapStateToProps =  createStructuredSelector({
+//   currentUser: selectCurrentUser
+// })
 
-const mapDispatchToProps = dispatch => ({
-  checkUserSession: () => dispatch(checkUserSession())
-})
+// const mapDispatchToProps = dispatch => ({
+//   checkUserSession: () => dispatch(checkUserSession())
+// })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// -- OLD WAY - using the {connect} hier order component and passing it  mapStateToProps & mapDispatchToProps
+//export default connect(mapStateToProps,mapDispatchToProps)(App);
+
+// -- NEW WAY - using Hooks from react-redux
+export default App
